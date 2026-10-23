@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="warmGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ea580c"/>
+      <stop offset="50%" stop-color="#c85a32"/>
+      <stop offset="100%" stop-color="#9a3412"/>
+    </linearGradient>
+    <linearGradient id="innerGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fed7aa"/>
+      <stop offset="100%" stop-color="#f97316"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- App Icon Background -->
+  <rect width="512" height="512" rx="128" fill="url(#warmGrad)" />
+  
+  <!-- Subtle Border Highlight -->
+  <rect x="8" y="8" width="496" height="496" rx="120" fill="none" stroke="#ffedd5" stroke-width="4" stroke-opacity="0.3" />
+  
+  <!-- Chat Bubble + Flame Motif -->
+  <g filter="url(#shadow)" transform="translate(96, 88)">
+    <!-- Main Chat Shape -->
+    <path d="M 40 40 
+             C 40 18, 58 0, 80 0 
+             L 240 0 
+             C 262 0, 280 18, 280 40 
+             L 280 190 
+             C 280 212, 262 230, 240 230 
+             L 100 230 
+             L 40 280 
+             L 40 230 
+             C 18 230, 0 212, 0 190 
+             L 0 40 
+             C 0 18, 18 0, 40 0 Z" 
+          fill="#1c1613" />
+
+    <!-- Flame Icon in center of Bubble -->
+    <path d="M 160 50 
+             C 160 50, 190 100, 190 135 
+             C 190 170, 165 195, 135 195 
+             C 100 195, 75 165, 80 125 
+             C 80 125, 95 140, 110 140 
+             C 125 140, 130 125, 125 105 
+             C 120 85, 140 65, 160 50 Z" 
+          fill="url(#innerGlow)" />
+          
+    <path d="M 135 125 
+             C 145 140, 140 160, 130 170 
+             C 120 170, 110 160, 112 150 
+             C 114 140, 125 130, 135 125 Z" 
+          fill="#fff7ed" />
+  </g>
+</svg>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Persona Chat - Character AI</title><meta name="theme-color" content="#c85a32"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/svg+xml" href="icon.svg"><link rel="alternate icon" href="favicon.ico"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="PersonaChat">
+<style>
+:root{--bg:#faf5f0;--pn:#fff;--pn2:#f4ebe3;--tx:#2a1f19;--mu:#7d6b5f;--ac:#c9703f;--bd:#e6d8cc;--dg:#d63c3c;--bub:#fff;--me:var(--ac);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#130e0c;--pn:#1a130f;--pn2:#241b16;--tx:#f3e9e1;--mu:#a8968a;--bd:#2f2420;--bub:#1e1511}}
+:root[data-theme="dark"]{--bg:#130e0c;--pn:#1a130f;--pn2:#241b16;--tx:#f3e9e1;--mu:#a8968a;--bd:#2f2420;--bub:#1e1511}
+*{box-sizing:border-box}html,body{height:100%;margin:0;background:var(--bg)}
+body{color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;border-radius:12px;padding:7px;display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:.15s}
+button:hover{color:var(--ac)}button:disabled{opacity:.35;pointer-events:none}
+input,textarea,select{font:inherit;color:var(--tx);background:var(--pn2);border:1px solid var(--bd);border-radius:12px;padding:9px 12px;width:100%;outline:0}
+input:focus,textarea:focus{border-color:var(--ac)}
+.btn{background:var(--pn2);border:1px solid var(--bd);padding:11px 14px;color:var(--tx);font-weight:600;width:100%}.btn:hover{color:var(--tx);border-color:var(--ac)}
+.pr{background:linear-gradient(135deg,var(--ac),color-mix(in srgb,var(--ac) 70%,#000));color:#fff;border-color:transparent}.pr:hover{color:#fff;filter:brightness(1.1)}
+#open{display:none}body.sc #open{display:inline-flex}.dg{color:var(--dg)}.mu{color:var(--mu)}
+#side{width:310px;background:var(--pn);border-right:1px solid var(--bd);display:flex;flex-direction:column;flex:none;z-index:20}
+body.sc #side{display:none}
+.brand{display:flex;align-items:center;gap:12px;padding:16px;border-bottom:1px solid var(--bd)}.brand b{display:block;font-size:17px}.brand small{color:var(--mu)}.brand .t{flex:1}
+.logo{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#e0703a,#a8441f);color:#fff;display:grid;place-items:center}
+.sp{padding:14px 12px;display:flex;flex-direction:column;gap:10px;border-bottom:1px solid var(--bd)}
+.srch{position:relative;margin:12px}.srch svg{position:absolute;left:12px;top:11px;color:var(--mu)}.srch input{padding-left:38px}
+#list{flex:1;overflow:auto;padding:0 8px 8px;display:flex;flex-direction:column;gap:4px}
+.ch{display:flex;gap:12px;align-items:center;padding:10px;border-radius:14px;cursor:pointer;border:1px solid transparent}
+.ch:hover{background:var(--pn2)}.ch.on{background:color-mix(in srgb,var(--ac) 14%,var(--pn));border-color:color-mix(in srgb,var(--ac) 40%,transparent)}
+.av{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;font-weight:700;font-size:18px;color:#fff;flex:none;position:relative}
+.av.sm{width:34px;height:34px;border-radius:11px;font-size:14px}.av.lg{width:58px;height:58px;font-size:24px}
+.dot{position:absolute;right:-3px;bottom:-3px;width:11px;height:11px;border-radius:50%;background:#10b981;border:2px solid var(--pn)}
+.cn{flex:1;min-width:0}.cn .r1{display:flex;justify-content:space-between;align-items:center;gap:6px}.cn b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cn small{display:block;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bd{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--mu);border:1px solid var(--bd);border-radius:7px;padding:1px 8px;flex:none;background:var(--pn2)}
+.bd.o{color:var(--ac);border-color:color-mix(in srgb,var(--ac) 45%,transparent);background:color-mix(in srgb,var(--ac) 12%,transparent)}
+.me{display:flex;align-items:center;gap:10px;padding:12px 16px;border-top:1px solid var(--bd)}.me .cn small{font-size:12px}
+#main{flex:1;display:flex;flex-direction:column;min-width:0}
+#head{display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid var(--bd);background:var(--pn)}
+#head .t{flex:1;min-width:0}#head .r1{display:flex;align-items:center;gap:10px;flex-wrap:wrap}#head b{font-size:19px}#head small{color:var(--mu);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#head button{color:var(--mu);padding:9px}#head button:hover{color:var(--ac)}#sunb{color:#f5b83d!important}
+#msgs{flex:1;overflow:auto;padding:22px 5%;display:flex;flex-direction:column;gap:20px}
+.row{display:flex;gap:12px;align-items:flex-start;animation:in .3s ease}.row.u{flex-direction:row-reverse}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.col{max-width:min(760px,82%);min-width:0}.row.u .col{display:flex;flex-direction:column;align-items:flex-end}
+.nm{font-size:13px;font-weight:600;margin:0 0 4px 4px}
+.bub{background:var(--bub);border:1px solid var(--bd);border-radius:18px;padding:12px 18px}
+.row.u .bub{background:var(--me);border-color:transparent;color:#fff}
+.bub p{margin:0 0 8px}.bub p:last-child{margin:0}.bub .a,.bub em{font-style:italic;opacity:.9}.bub .d{font-weight:500}.bub strong{font-weight:800}
+.row.pin .bub{box-shadow:0 0 0 2px #f5b83d}
+.tl{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:4px;color:var(--mu);width:100%}.row.u .tl{justify-content:flex-end}
+.tl button{color:var(--mu);padding:6px 7px}.tl button:hover,.tl .on{color:var(--ac)}.tl .on svg{fill:currentColor}.sw{font-size:13px}.cnt{font-size:12px}
+.typ span{display:inline-block;width:7px;height:7px;margin:0 2px;border-radius:50%;background:var(--mu);animation:bl 1s infinite}.typ span:nth-child(2){animation-delay:.2s}.typ span:nth-child(3){animation-delay:.4s}@keyframes bl{50%{opacity:.2}}
+#acts{display:flex;gap:8px;align-items:center;padding:12px 18px 0;overflow-x:auto;color:var(--mu);border-top:1px solid var(--bd);background:var(--pn);white-space:nowrap}
+#acts .chip{border:1px solid var(--bd);background:var(--pn2);border-radius:20px;padding:5px 15px;color:var(--tx);font-size:14px}#acts .chip:hover{border-color:var(--ac);color:var(--ac)}
+#bar{padding:12px 18px 16px;background:var(--pn);display:flex;gap:10px;align-items:flex-end}
+#inp{resize:none;max-height:150px;border-radius:18px;padding:13px 18px;border-color:color-mix(in srgb,var(--ac) 60%,var(--bd))}
+#send{background:var(--ac);color:#fff;width:48px;height:48px;border-radius:15px;flex:none}#send:hover{color:#fff;filter:brightness(1.1)}
+#dr{width:0;overflow:hidden;background:var(--pn);border-left:1px solid var(--bd);transition:width .25s;flex:none}#dr.open{width:330px}#dr>div{width:330px;padding:16px;overflow:auto;height:100%}
+.pf{text-align:center;margin-bottom:14px}.pf .av{margin:0 auto 8px}.pf h3{margin:0}.pf small{color:var(--mu)}
+.ds{margin-bottom:14px}.ds>label,.md label{display:block;font-size:12px;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;margin:10px 0 5px}.ds>label{margin-top:0}
+.ds .box{display:flex;justify-content:space-between;align-items:center;background:var(--pn2);border-radius:12px;padding:8px 12px}
+.pi{background:var(--pn2);border-radius:12px;padding:9px 12px;margin-bottom:6px;font-size:14px}.pi i{display:block;color:var(--mu);font-size:12px}
+.stk{display:flex;flex-direction:column;gap:8px}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;place-items:center;z-index:50;padding:16px}.ov.show{display:grid}
+.md{background:var(--pn);border:1px solid var(--bd);border-radius:20px;padding:22px;width:min(470px,100%);max-height:90vh;overflow:auto;animation:in .25s}.md h2{margin:0 0 6px;font-size:19px}.md label{margin-top:12px}
+.rw{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}.rw .btn{width:auto}
+.warn{background:rgba(214,60,60,.12);border:1px solid var(--dg);border-radius:12px;padding:10px 12px;margin-top:8px}
+#toast{position:fixed;bottom:100px;left:50%;transform:translate(-50%,20px);background:var(--pn2);border:1px solid var(--bd);padding:9px 16px;border-radius:12px;opacity:0;transition:.3s;pointer-events:none;z-index:60}#toast.show{opacity:1;transform:translate(-50%,0)}
+.empty{margin:auto;color:var(--mu);text-align:center;padding:12px}
+@media(max-width:820px){#side{position:fixed;inset:0 auto 0 0;width:86%;max-width:340px;box-shadow:8px 0 30px rgba(0,0,0,.4)}#dr{position:fixed;right:0;top:0;bottom:0;z-index:30}#dr.open{width:min(330px,92%)}#msgs{padding:16px 12px}.col{max-width:calc(100% - 50px)}#head b{font-size:17px}.dtx{display:none}}
+#dr.open{width:390px}#dr>div{width:390px;padding:0;display:flex;flex-direction:column;overflow:hidden}
+.dh{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--bd);font-size:17px}.dh button{color:var(--mu)}.db{flex:1;overflow:auto;padding:16px 16px 28px}
+.card{border:1px solid var(--bd);background:var(--pn2);border-radius:22px;padding:22px 18px;text-align:center;margin-bottom:22px}.av.xl{width:70px;height:70px;font-size:30px;border-radius:20px;margin:0 auto 12px}.card h3{margin:0 0 4px;font-size:21px}.card p.mu{margin:0 0 12px}
+.tg{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:16px}.tg span{background:var(--pn);border:1px solid var(--bd);border-radius:20px;padding:2px 13px;font-size:13px;font-weight:600;color:var(--mu)}
+.kv{text-align:left;border-top:1px solid var(--bd);padding-top:14px}.kv p{margin:0 0 9px}.kv span{color:var(--mu);font-weight:600}
+.sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--mu)}.sh .ic{display:flex;align-items:center;gap:8px}.sh .ic>svg{color:var(--ac)}.lk{color:var(--ac);font-weight:600;padding:2px 4px;letter-spacing:0;font-size:14px}
+.pc{border:1px solid var(--bd);background:var(--pn2);border-radius:16px;padding:12px 16px}.pc b{display:block}.pc small{color:var(--mu);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dash{border:1px dashed var(--bd);border-radius:16px;padding:20px;text-align:center;color:var(--mu);font-size:14px;background:var(--pn2)}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.seg button{background:var(--pn2);border:1px solid var(--bd);padding:11px;font-weight:600;color:var(--mu)}.seg button.on{border-color:var(--ac);color:var(--ac);background:color-mix(in srgb,var(--ac) 16%,var(--pn2))}
+.db hr{border:0;border-top:1px solid var(--bd);margin:18px 0}.row2{justify-content:flex-start}.row2 span{flex:1;text-align:left}.row2 em{font-style:normal;background:var(--bd);border-radius:12px;padding:1px 10px;font-size:13px}
+.btn.gold{color:#f5b83d;border-color:color-mix(in srgb,#f5b83d 35%,transparent);background:color-mix(in srgb,#f5b83d 9%,var(--pn2))}.btn.gold:hover{color:#f5b83d}
+@media(max-width:820px){#dr.open{width:min(390px,94%)}#dr>div{width:min(390px,94vw)}}
+.phr{display:flex;gap:16px;align-items:center;margin:12px 0 4px}.phr .av.xl{flex:none}
+</style></head><body>
+<aside id="side">
+<div class="brand"><div class="logo" id="logo"></div><div class="t"><b>Persona Chat</b><small>Character AI Engine</small></div><button id="col" aria-label="Collapse sidebar"></button></div>
+<div class="sp"><button class="btn pr" id="newc"></button><button class="btn" id="forge"></button></div>
+<div class="srch" id="srch"><input id="q" placeholder="Search characters…"></div>
+<div id="list"></div>
+<div class="me"><div class="av sm" id="mav" style="background:#c85a32"></div><div class="cn"><b id="mn">You</b></div><button id="sw" class="mu">Switch</button></div>
+</aside>
+<section id="main">
+<div id="head"><button id="open" aria-label="Open sidebar"></button><div class="av" id="hav" style="width:50px;height:50px"></div><div class="t"><div class="r1"><b id="hn"></b><span class="bd o" id="hb"></span></div><small id="ht"></small></div>
+<button id="rew" title="Rewind last exchange"></button><button id="pal" title="Change accent colour"></button><button id="sunb" title="Light / dark"></button><button id="det"></button></div>
+<div id="msgs"></div>
+<div id="acts"></div>
+<div id="bar"><textarea id="inp" rows="1"></textarea><button id="send" aria-label="Send"></button></div>
+</section>
+<aside id="dr"><div id="drb"></div></aside>
+<div class="ov" id="ov"><div class="md" id="md"></div></div><div id="toast"></div>
+<script>
+const $=s=>document.querySelector(s),esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const rnd=a=>a[Math.floor(Math.random()*a.length)],uid=()=>Math.random().toString(36).slice(2,9);
+const IC={flame:'<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.4-.5-2-1-3-1.1-2.2-.2-4 1-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.2.4-2.4 1-3 0 1.4 1 2.5 2.5 2.5z"/>',plus:'<path d="M5 12h14M12 5v14"/>',spark:'<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 3v4M17 5h4M5 17v4M3 19h4"/>',search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',left:'<path d="m15 18-6-6 6-6"/>',right:'<path d="m9 18 6-6-6-6"/>',undo:'<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>',pal:'<circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.9 0 1.5-.7 1.5-1.5 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.8.7-1.5 1.5-1.5H16c3.3 0 6-2.7 6-6 0-4.9-4.5-9-10-9z"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"/>',moon:'<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/>',sl:'<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',vol:'<path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/>',pin:'<path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/>',pen:'<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/>',copy:'<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',x:'<path d="M18 6 6 18M6 6l12 12"/>',book:'<path d="M12 7v14M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/>',arc:'<rect x="2" y="3" width="20" height="5" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8M10 12h4"/>',chat:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',rcw:'<path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/>',send:'<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>'};
+const I=(n,s=19)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${IC[n]}</svg>`;
+const CH=[["Captain Ember","Boisterous champion with a heart of molten gold","Heroic","his","bold, heroic, warm, cheerful, brave, encouraging, protective","heroic","Fear not, for help has arrived!","Stand tall—the dawn always answers!","a rain-slick rooftop at dusk overlooking a glowing, lantern-lit city","#c85a32"],
+["Wren","Shy archive keeper with a dry, curious streak","Shy","her","shy, kind, curious, quiet, a little sarcastic","shy","Oh—um, hello. You’re not supposed to be down here after closing.","","a candlelit archive under the old library","#d97706"],
+["Lyra Solis","Warm herbalist & cozy tea shop companion","Warm","her","kind, gentle, warm, caring, cheerful","casual","Welcome in! Kettle’s on, and you look like you could use a cup.","","a cozy tea shop that smells of chamomile and rain","#a8643a"],
+["Cassian Vance","Quick-witted rogue with a sly smile and hidden depths","Sarcastic","his","sarcastic, witty, bold, loyal beneath the swagger","playful","Well, well. Either you’re lost, or you’re exactly who I was waiting for.","","a smoky tavern in a port city at midnight","#c2570c"],
+["Dr. Aris Thorne","Eccentric clockwork alchemist fascinated by curious minds","Poetic","his","curious, calm, poetic, eccentric, gentle","formal","Ah, a visitor! Mind the gears, they dream when no one is watching.","","a workshop of ticking clockwork and bubbling alembics","#b5483f"]];
+const VOICES={"Captain Ember":"Puck","Wren":"Kore","Lyra Solis":"Zephyr","Cassian Vance":"Charon","Dr. Aris Thorne":"Fenrir"},voiceOf=c=>c.voice||VOICES[c.name]||"Kore";
+const abg=c=>c.img?`background:url("${c.img}") center/cover`:`background:${c.color}`,ai=c=>c.img?"":esc(c.name[0].toUpperCase());
+const mk=c=>({id:uid(),r:"c",vs:[{b:"",l:c.greet||"Hello.",h:""}],vi:0,pin:0});
+function seed(){const chars=CH.map(a=>({id:uid(),name:a[0],tag:a[1],badge:a[2],pos:a[3],personality:a[4],style:a[5],greet:a[6],catch:a[7],scene:a[8],color:a[9]}));return{chars,cur:chars[0].id,chats:Object.fromEntries(chars.map(c=>[c.id,[mk(c)]]))}}
+let S;try{S=JSON.parse(localStorage.getItem("pcs2"))}catch(e){}if(!S||!S.chars)S=seed();
+S.mem=S.mem||{};S.len=S.len||{};S.per=S.per&&S.per.length?S.per:[{id:"p1",name:"You",desc:""}];S.perCur=S.perCur||S.per[0].id;S.arch=S.arch||{};S.per.forEach(p=>{if(p.id=="p1"&&!p.desc)p.desc="An adventurous traveler exploring new paths and stories."});S.chars.forEach(c=>{if(c.name=="Captain Ember"&&c.catch=="Plus ultra, as they say!"){c.catch="Stand tall—the dawn always answers!";c.personality="bold, heroic, warm, cheerful, brave, encouraging, protective";c.scene="a rain-slick rooftop at dusk overlooking a glowing, lantern-lit city"}});S.acc=S.acc||"#c9703f";S.theme=S.theme||"dark";
+const save=()=>{try{localStorage.setItem("pcs2",JSON.stringify(S))}catch(e){}};
+const cur=()=>S.chars.find(c=>c.id==S.cur),chat=()=>S.chats[S.cur],pcur=()=>S.per.find(p=>p.id==S.perCur)||S.per[0];
+let busy=false,query="";
+/* ---------- local response engine ---------- */
+const TR={shy:/shy|timid|quiet|reserved|nervous|bashful/,bold:/bold|brave|confident|fearless|cocky/,kind:/kind|gentle|warm|caring|sweet/,sarcastic:/sarcas|snark|witty|teas|dry/,cheerful:/cheer|happy|bubbly|energetic|upbeat/,stoic:/stoic|cold|calm|serious|stern|aloof/,heroic:/hero|noble|justice|inspir/};
+function tone(c){const t=(c.personality||"").toLowerCase(),k=Object.keys(TR).filter(x=>TR[x].test(t));
+const sc={warm:0,cool:0,sharp:0};k.forEach(x=>{if(x=="kind"||x=="cheerful")sc.warm++;if(x=="shy"||x=="stoic")sc.cool++;if(x=="sarcastic"||x=="bold"||x=="heroic")sc.sharp++});
+const g=Object.keys(sc).sort((a,b)=>sc[b]-sc[a])[0];return sc[g]?g:"warm"}
+const ADV={warm:["with a small smile","warmly","brightly","with easy warmth"],cool:["quietly","after a measured pause","with careful composure","eyes lowered for a heartbeat"],sharp:["with a crooked grin","without missing a beat","chin tilted up","eyes glinting"]};
+const IN=[
+["shake",/shake.*hand|handshake|extend.*hand|offer.*hand/,["{N}’s grip lands firm and brief, {adv}, a flicker of surprise crossing {pos} face.","{N} tests the grip once, {adv}, then lets go a moment later than expected."],["Good to finally put a face to the name.","That’s a steady hand. I like that."]],
+["hug",/hug|embrace|hold .*close/,["{N} goes still for half a second, then eases in {adv}, one hand settling against your back.","{N} lets out a breath {pos} shoulders have been holding all day, {adv}."],["…Okay. I think I needed that.","Careful, or I might not let go first."]],
+["wave",/\bwav(e|es|ing)\b/,["{N}’s attention snaps your way, {adv}, and a hand lifts in an easy answer.","{N} spots you across the space and {adv} starts to close the distance."],["There you are. Walk with me?","Over here! I was just thinking about you."]],
+["smile",/smil|grin/,["{N} catches it and {adv} lets {pos} own expression soften.","The corner of {N}’s mouth betrays {pos} composure, {adv}."],["You’re in a good mood. It’s contagious.","Don’t look at me like that, it’s unfair."]],
+["pat",/\b(pat|pats|poke|pokes|tap|nudge|nudges|ruffle)/,["{N} flinches, then {adv} leans into it despite {pos} better judgment.","{N} freezes, {adv}, and a faint colour climbs up to {pos} ears."],["Warn a person next time.","…I didn’t say you could stop."]],
+["gift",/\b(give|gives|hand|hands|offer|offers|gift|present)\b/,["{N} turns the offering over carefully, {adv}, as though afraid to break it.","{N} accepts it with both hands, {adv}, and a beat of silence says more than words."],["You didn’t have to. Really. …Thank you.","Nobody’s done this for me in a long while."]],
+["laugh",/laugh|giggl|haha|lol|chuckl/,["{N}’s mouth twitches, {adv}, and the laugh escapes before {N} can stop it.","{N} bites back a smile, fails, and shakes {pos} head {adv}."],["Alright, alright, that one got me.","Don’t stop. I haven’t laughed like that in ages."]],
+["bye",/\b(bye|goodbye|farewell|see you|leaving|gotta go)\b/,["{N}’s gaze follows you toward the door, {adv}, one step forward before stopping.","{N} nods slowly, {adv}, though {pos} hands linger on nothing."],["Go if you must. Just come back and tell me how it ends.","Be safe. I’ll keep the story warm until you return."]],
+["thanks",/thank|appreciate|grateful/,["{N} waves it off {adv}, though the tips of {pos} ears give {N} away.","{N} dips {pos} head, {adv}, unused to hearing it."],["Don’t mention it. Truly.","It was the least I could do."]],
+["compliment",/(you|your).{0,25}(great|amazing|cool|cute|strong|beautiful|handsome|kind|brave|smart|impressive|awesome|nice)/,["{N} glances away, {adv}, caught completely off guard.","{N} straightens a little, {adv}, then immediately pretends not to have."],["Flattery? Careful, I might start believing you.","That’s… kind. Stranger, but kind."]],
+["insult",/stupid|idiot|hate you|ugly|shut up|useless|pathetic|loser/,["{N}’s expression cools {adv}; the space between you suddenly feels wider.","{N} goes very still, {adv}, and the warmth leaves the room."],["That was unkind. I’ll let it pass once. Once.","If that’s how you feel, say why. I’m listening."]],
+["sad",/\b(sad|cry|crying|tired|scared|lonely|upset|afraid|anxious|hurt)\b/,["{N} sets everything aside, {adv}, and moves closer without crowding you.","{N}’s whole posture changes, {adv}, attention narrowing to you alone."],["Hey. Sit. Whatever it is, we can carry it together.","You don’t have to explain it all at once. I’m here."]],
+["greet",/\b(hi|hello|hey|hiya|good (morning|evening|afternoon)|yo)\b/,["{N} looks up, {adv}, shoulders loosening a fraction.","{N} turns toward you, {adv}, as if the greeting settled something."],["Hello. Good timing, actually.","Ah, you came. Come in, come in."]],
+["story",/\b(walk|go to|let’s|let's|follow|enter|open|explore|run|climb|search|investigate|sneak|head)\b/,["{N} shifts {pos} weight, {adv}, already scanning the path ahead.","{N} falls into step beside you, {adv}, alert to every sound."],["Then we move. Stay close and keep your eyes open.","Lead the way. I’ve got your back."]],
+["ask",/\?\s*\**\s*$/,["{N} considers it, {adv}, fingers tapping slowly against {pos} arm.","{N} takes a moment, {adv}, as if weighing how much to say."],["Hm. Let me think how to put this.","That’s a better question than you know."]]];
+const FB=[["{N} listens, {adv}, head tilted slightly as the words settle.","{N} watches you, {adv}, reading more than you said."],["Go on. I’m following you.","Interesting. Keep going."]];
+const HK=["Somewhere beyond the walls a bell rings twice, and the mood shifts.","{N} notices something half-hidden nearby: a folded note with your name on it.","Footsteps echo down the passage, unhurried, getting closer.","The light changes, and for a moment everything feels like the start of something.","A low rumble rolls through the floor. {N} looks to you for the decision.","{N} lowers {pos} voice. There is something {N} hasn’t told anyone yet.","A door somewhere clicks shut on its own."];
+function sty(l,s,c){switch(s){case"shy":return"…um, "+l.charAt(0).toLowerCase()+l.slice(1).replace(/\.$/,"…");
+case"gruff":return"Tch. "+l;case"playful":return"Heh, "+l.charAt(0).toLowerCase()+l.slice(1)+" ~";
+case"formal":return l.replace(/\b(don’t)\b/gi,"do not").replace(/\bI’ll\b/g,"I shall");
+case"heroic":return l.replace(/\.$/,"!").replace(/…/g,"—");case"casual":return l.replace(/\bdo not\b/gi,"don’t")}return l}
+function gen(c,hist){const last=[...hist].reverse().find(m=>m.r=="u"),raw=last?last.t:"";
+const it=IN.find(x=>x[1].test(raw.toLowerCase()))||["fb",0,...FB],g=tone(c);
+const f=s=>s.replace(/{N}/g,c.name).replace(/{adv}/g,rnd(ADV[g])).replace(/{pos}/g,c.pos||"their");
+let line=sty(rnd(it[3]),c.style,c);
+if(c.catch&&Math.random()<.3)line+=" "+rnd(c.catch.split("|").filter(Boolean));
+const topic=(raw.replace(/\*[^*]*\*/g,"").match(/[A-Za-z’]{6,}/g)||[]).pop();
+if(it[0]=="ask"&&topic)line+=" "+sty("The part about “"+topic.toLowerCase()+"” is worth pulling at.",c.style,c);
+const per=pcur();if(per.name&&per.name!="You"&&Math.random()<.3)line=per.name.split(" ")[0]+"—"+line;const turn=hist.filter(m=>m.r=="u").length,pins=hist.filter(m=>m.pin).length;
+const ln=S.len[c.id]||"med",mem=(S.mem[c.id]||"").trim();let hk="";if(ln!="short"&&(ln=="long"||Math.random()<.7)){hk=mem&&Math.random()<.25?"{N} keeps one thing in mind: "+mem:turn==1&&c.scene?"Around you: "+c.scene+".":(pins&&Math.random()<.25?c.name+" hasn’t forgotten the moment that mattered earlier, and it colours every word.":rnd(HK))}
+return{b:f(rnd(it[2])),l:line,h:f(hk)}}
+
+/* ---------- UI ---------- */
+const fmt=t=>esc(t).replace(/\*\*\*([^*]+?)\*\*\*/g,"<strong><em>$1</em></strong>").replace(/\*\*([^*]+?)\*\*/g,"<strong>$1</strong>").replace(/\*([^*]+?)\*/g,"<em>$1</em>");
+function body(m){if(m.r=="u")return`<p>${fmt(m.t)}</p>`;const v=m.vs[m.vi];if(v.raw)return`<p>${fmt(v.raw)}</p>`;
+return(v.b?`<p class="a">${esc(v.b)}</p>`:"")+(v.l?`<p class="d">“${esc(v.l)}”</p>`:"")+(v.h?`<p class="a">${esc(v.h)}</p>`:"")}
+const plain=m=>m.r=="u"?m.t:(v=>v.raw||[v.b,v.l,v.h].filter(Boolean).join(" "))(m.vs[m.vi]);
+function msgHtml(m,last){const u=m.r=="u",c=cur(),p=pcur(),nv=u?1:m.vs.length;
+const sw=!u&&last?`<span class="sw"><button data-a="next">${I("spark",15)} Swipe for alternative</button>${nv>1?`<button data-a="prev" ${m.vi==0?"disabled":""}>‹</button><span class="cnt">${m.vi+1}/${nv}</span>`:""}</span>`:"<span></span>";
+return`<div class="row ${u?"u":"c"} ${m.pin?"pin":""}" data-id="${m.id}"><div class="av sm" style="${u?"background:#c85a32":abg(c)}">${u?esc(p.name[0].toUpperCase()):ai(c)}</div><div class="col"><div class="nm">${esc(u?p.name:c.name)}</div><div class="bub">${body(m)}</div>
+<div class="tl">${sw}<span>${u?"":`<button data-a="tts" title="Read aloud">${I("vol",17)}</button>`}<button data-a="pin" class="${m.pin?"on":""}" title="Pin">${I("pin",17)}</button><button data-a="edit" title="Edit">${I("pen",17)}</button><button data-a="copy" title="Copy">${I("copy",17)}</button><button data-a="rw" title="Rewind to here">${I("undo",17)}</button></span></div></div></div>`}
+function renderMsgs(typing){const h=chat(),b=$("#msgs");b.innerHTML=h.map((m,i)=>msgHtml(m,i==h.length-1)).join("")+(typing?`<div class="row c"><div class="av sm" style="${abg(cur())}">${ai(cur())}</div><div class="col"><div class="nm">${esc(cur().name)}</div><div class="bub typ"><span></span><span></span><span></span></div></div></div>`:"");
+b.querySelectorAll(".tl button").forEach(x=>x.onclick=()=>act(x.dataset.a,x.closest(".row").dataset.id));b.scrollTop=b.scrollHeight}
+function renderList(){const q=query.toLowerCase(),L=S.chars.filter(c=>!q||(c.name+c.tag+(c.badge||"")).toLowerCase().includes(q));
+$("#list").innerHTML=L.length?L.map(c=>`<div class="ch ${c.id==S.cur?"on":""}" data-id="${c.id}"><div class="av" style="${abg(c)}">${ai(c)}${c.id==S.cur?'<i class="dot"></i>':""}</div><div class="cn"><div class="r1"><b>${esc(c.name)}</b><span class="bd">${esc(c.badge||c.style)}</span></div><small>${esc(c.tag||"")}</small></div></div>`).join(""):'<div class="empty">No characters found.</div>';
+$("#list").querySelectorAll(".ch").forEach(e=>e.onclick=()=>{if(busy)return toast("Wait for the reply");S.cur=e.dataset.id;save();if(innerWidth<=820)document.body.classList.add("sc");renderAll()})}
+function renderHead(){const c=cur();$("#hav").style.cssText="width:50px;height:50px;"+abg(c);$("#hav").textContent=c.img?"":c.name[0].toUpperCase();$("#hn").textContent=c.name;$("#hb").textContent=c.badge||c.style;$("#ht").textContent=c.tag||"";$("#inp").placeholder=`Message ${c.name}… (use *asterisks* for actions)`;$("#mn").textContent=pcur().name;$("#mav").textContent=pcur().name[0].toUpperCase();$("#rew").disabled=chat().length<2}
+function archive(){const h=chat();if(h.filter(m=>m.r=="u").length)(S.arch[S.cur]=S.arch[S.cur]||[]).unshift({t:Date.now(),msgs:h})}
+function historyM(){const a=S.arch[S.cur]||[];modal(`<h2>Archived conversations</h2>${a.length?a.map((x,i)=>`<div class="ch"><div class="cn"><b>${new Date(x.t).toLocaleString()}</b><small>${x.msgs.length} messages</small></div><button class="btn" style="width:auto" data-r="${i}">Restore</button><button class="dg" data-d="${i}">${I("x",16)}</button></div>`).join(""):'<div class="empty">No archived conversations yet.</div>'}<div class="rw"><button class="btn pr" id="no">Close</button></div>`,m=>{m.querySelector("#no").onclick=closeM;
+m.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{const x=a[+b.dataset.r];confirmM("Restore this chat?","Your current chat will be archived and this one will replace it.","Restore",()=>{archive();const arr=S.arch[S.cur];arr.splice(arr.indexOf(x),1);S.chats[S.cur]=x.msgs;save();renderAll()})});
+m.querySelectorAll("[data-d]").forEach(b=>b.onclick=()=>{a.splice(+b.dataset.d,1);save();renderDrawer();historyM()})})}
+function renderDrawer(){const c=cur(),p=pcur(),pn=chat().filter(m=>m.pin),len=S.len[c.id]||"med",tr=(c.personality||"").split(",").map(x=>x.trim()).filter(Boolean),na=(S.arch[c.id]||[]).length;
+$("#drb").innerHTML=`<div class="dh"><b>Chat Details &amp; Lore</b><button id="dcl" aria-label="Close">${I("x",20)}</button></div><div class="db">
+<div class="card"><div class="av xl" style="${abg(c)}">${ai(c)}</div><h3>${esc(c.name)}</h3><p class="mu">${esc(c.tag||"")}</p><div class="tg">${tr.map(x=>`<span>${esc(x)}</span>`).join("")}</div>
+<div class="kv"><p><span>Speech Style:</span> ${esc(c.style[0].toUpperCase()+c.style.slice(1))}</p><p><span>Setting / Premise:</span> ${esc(c.scene||"—")}</p>${c.catch?`<p><span>Motto / Catchphrase:</span> <i>“${esc(c.catch.split("|")[0])}”</i></p>`:""}<p><span>Voice Pitch:</span> ${esc(voiceOf(c))}</p></div></div>
+<div class="sh"><span>YOUR PERSONA</span><button id="dp" class="lk">Switch Persona</button></div><div class="pc"><b>${esc(p.name)}</b><small>${esc(p.desc||"")}</small></div>
+<div class="sh" style="margin-top:22px"><span class="ic">${I("book",17)} PINNED LORE MEMORY</span></div><p class="mu" style="margin:0 0 8px;font-size:14px">Facts the character will always keep in mind across the entire conversation:</p>
+<textarea id="dm" rows="4" placeholder="e.g., We have known each other since childhood; I am secretly hunting an ancient talisman…">${esc(S.mem[c.id]||"")}</textarea>
+<div class="sh" style="margin-top:22px"><span class="ic"><span style="color:#f5b83d">${I("pin",17)}</span> PINNED MOMENTS (${pn.length})</span></div>
+${pn.length?pn.map(m=>`<div class="pi"><i>${m.r=="u"?esc(p.name):esc(c.name)}</i>${esc(plain(m).replace(/\*/g,"")).slice(0,160)}</div>`).join(""):'<div class="dash">Pin key story messages by clicking the pin icon on any message bubble.</div>'}
+<div class="sh" style="margin-top:22px"><span>DESIRED RESPONSE LENGTH</span></div><div class="seg">${[["short","Short"],["med","Medium"],["long","Long"]].map(k=>`<button data-l="${k[0]}" class="${len==k[0]?"on":""}">${k[1]}</button>`).join("")}</div>
+<hr><button class="btn row2" id="dh">${I("arc",18)}<span>Archived Conversations</span><em>${na}</em></button><hr>
+<div class="stk"><button class="btn" id="dn">${I("chat",18)} Save &amp; Start New Chat</button><button class="btn" id="de">${I("pen",18)} Edit Character Profile</button><button class="btn gold" id="ds">${I("rcw",18)} Restart Chat From Opening Line</button><button class="btn dg" id="dx">${I("x",18)} Delete Character</button></div></div>`;
+$("#dcl").onclick=()=>$("#dr").classList.remove("open");$("#dp").onclick=personaM;$("#de").onclick=()=>editor(c);$("#dh").onclick=historyM;
+$("#dm").onchange=e=>{S.mem[c.id]=e.target.value;save();toast("Lore memory saved")};
+$("#drb").querySelectorAll("[data-l]").forEach(b=>b.onclick=()=>{S.len[c.id]=b.dataset.l;save();renderDrawer()});
+$("#dn").onclick=()=>{if(busy)return;confirmM("Save & start a new chat?","Your current chat will be saved to Archived Conversations and a fresh one will begin.","New chat",()=>{archive();S.chats[S.cur]=[mk(cur())];save();renderAll();toast("New chat started")})};
+$("#ds").onclick=()=>{if(busy)return;confirmM("Restart chat?","This permanently erases the current chat and restarts from the opening line. It will NOT be archived.","Restart",()=>{S.chats[S.cur]=[mk(cur())];save();renderAll();toast("Chat restarted")})};
+$("#dx").onclick=()=>{if(S.chars.length<2)return toast("You need at least one character");confirmM("Delete "+esc(c.name)+"?","This permanently deletes the character and the whole conversation.","Delete",()=>{S.chars=S.chars.filter(x=>x.id!=c.id);delete S.chats[c.id];delete S.arch[c.id];S.cur=S.chars[0].id;save();renderAll()})}}
+function applyTheme(){const r=document.documentElement;r.dataset.theme=S.theme;r.style.setProperty("--ac",S.acc);$("#sunb").innerHTML=I(S.theme=="dark"?"sun":"moon")}
+function renderAll(){renderList();renderHead();renderMsgs();renderDrawer()}
+function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("show"),2200)}
+function modal(h,w){$("#md").innerHTML=h;$("#ov").classList.add("show");w&&w($("#md"))}
+const closeM=()=>$("#ov").classList.remove("show");
+function confirmM(t,msg,ok,fn){modal(`<h2>${t}</h2><div class="warn">⚠ ${msg}</div><div class="rw"><button class="btn" id="no">Cancel</button><button class="btn pr" id="yes">${ok}</button></div>`,m=>{m.querySelector("#no").onclick=closeM;m.querySelector("#yes").onclick=()=>{closeM();fn()}})}
+$("#ov").onclick=e=>{if(e.target.id=="ov")closeM()};
+function act(a,id){const h=chat(),i=h.findIndex(m=>m.id==id),m=h[i];
+if(a=="pin"){m.pin=m.pin?0:1;save();renderMsgs();renderDrawer();toast(m.pin?"Message pinned":"Pin removed");return}
+if(busy)return toast("Wait for the reply");
+if(a=="copy"){try{navigator.clipboard.writeText(plain(m)).then(()=>toast("Copied"),()=>toast("Copy unavailable"))}catch(e){toast("Copy unavailable")}}
+if(a=="tts"){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(plain(m).replace(/\*/g,""));speechSynthesis.speak(u)}catch(e){toast("Voice unavailable")}}
+if(a=="rw"){const n=h.length-1-i;if(!n)return toast("Nothing after this message");confirmM("Rewind chat?",`This permanently deletes the ${n} message${n>1?"s":""} after this point. This cannot be undone.`,"Rewind",()=>{h.splice(i+1);save();renderAll();toast("Chat rewound")})}
+if(a=="edit")modal(`<h2>Edit message</h2><textarea id="et" rows="6">${esc(m.r=="u"?m.t:(m.vs[m.vi].raw||[m.vs[m.vi].b&&"*"+m.vs[m.vi].b+"*",m.vs[m.vi].l&&"“"+m.vs[m.vi].l+"”",m.vs[m.vi].h&&"*"+m.vs[m.vi].h+"*"].filter(Boolean).join("\n\n")))}</textarea><div class="rw"><button class="btn" id="no">Cancel</button><button class="btn pr" id="yes">Save</button></div>`,d=>{d.querySelector("#no").onclick=closeM;d.querySelector("#yes").onclick=()=>{const t=d.querySelector("#et").value.trim();if(!t)return;if(m.r=="u")m.t=t;else m.vs[m.vi]={raw:t};save();closeM();renderMsgs()}});
+if(a=="prev"&&m.vi>0){m.vi--;save();renderMsgs()}
+if(a=="next"){if(m.vi<m.vs.length-1){m.vi++;save();renderMsgs()}else{const bf=h.slice(0,i);let v=gen(cur(),bf),t=0;while(t++<6&&m.vs.some(x=>x.l==v.l&&x.b==v.b))v=gen(cur(),bf);busy=true;m.vs.push(v);m.vi=m.vs.length-1;renderMsgs();setTimeout(()=>{busy=false;save()},0)}}}
+function send(){if(busy)return;const t=$("#inp").value.trim();if(!t)return;chat().push({id:uid(),r:"u",t,pin:0});$("#inp").value="";$("#inp").style.height="auto";busy=true;renderMsgs(true);
+setTimeout(()=>{chat().push({id:uid(),r:"c",vs:[gen(cur(),chat())],vi:0,pin:0});busy=false;save();renderMsgs();renderHead()},650+Math.random()*500)}
+$("#send").onclick=send;$("#inp").addEventListener("keydown",e=>{if(e.key=="Enter"&&!e.shiftKey){e.preventDefault();send()}});
+$("#inp").addEventListener("input",e=>{e.target.style.height="auto";e.target.style.height=Math.min(150,e.target.scrollHeight)+"px"});
+$("#rew").onclick=()=>{if(busy)return;const h=chat();let i=h.length-1;while(i>0&&h[i].r!="u")i--;if(i<=0)return;confirmM("Rewind last exchange?","This removes your last message and the character’s reply.","Rewind",()=>{h.splice(i);save();renderAll()})};
+$("#det").onclick=()=>$("#dr").classList.toggle("open");
+$("#sunb").onclick=()=>{S.theme=S.theme=="dark"?"light":"dark";save();applyTheme()};
+const ACC=["#c9703f","#d97706","#3b82d6","#8b5cf6","#10b981","#ec4899"];$("#pal").onclick=()=>{S.acc=ACC[(ACC.indexOf(S.acc)+1)%ACC.length];save();applyTheme();toast("Accent colour changed")};
+$("#col").onclick=()=>document.body.classList.add("sc");$("#open").onclick=()=>document.body.classList.remove("sc");
+$("#q").oninput=e=>{query=e.target.value;renderList()};
+$("#acts").innerHTML=`<span>${I("spark",15)} Actions:</span>`+["*smiles warmly*","*leans in closer*","*takes a slow breath*","*glances around*","*offers a hand*","*laughs softly*"].map(a=>`<button class="chip">${a}</button>`).join("");
+$("#acts").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{const i=$("#inp");i.value=(i.value?i.value+" ":"")+b.textContent;i.focus()});
+function editor(c){const isNew=!c;c=c||{name:"",tag:"",badge:"",pos:"their",personality:"",style:"casual",greet:"",catch:"",scene:"",color:rnd(["#c85a32","#d97706","#a8643a","#c2570c","#b5483f","#3aa6a0","#7b61e0"])};
+const sel=(k,o)=>o.map(x=>`<option ${c[k]==x?"selected":""}>${x}</option>`).join("");
+modal(`<h2>${isNew?"Create":"Edit"} character</h2><div class="phr"><div class="av xl" id="pv" style="margin:0"></div><div class="stk" style="flex:1"><button class="btn" id="up" type="button">Upload photo</button><button class="btn dg" id="rm" type="button">Remove photo</button></div><input type="file" id="pfile" accept="image/*" hidden></div><label>Name</label><input id="f_name" value="${esc(c.name)}"><label>Tagline</label><input id="f_tag" value="${esc(c.tag)}">
+<label>Badge (one word)</label><input id="f_bd" value="${esc(c.badge||"")}"><label>Pronoun used in actions</label><select id="f_pos">${sel("pos",["his","her","their"])}</select>
+<label>Personality (try: shy, bold, kind, sarcastic, cheerful, stoic, heroic)</label><textarea id="f_per" rows="2">${esc(c.personality)}</textarea>
+<label>Speech style</label><select id="f_sty">${sel("style",["casual","formal","playful","gruff","shy","heroic"])}</select>
+<label>Opening line</label><input id="f_gr" value="${esc(c.greet)}"><label>Catchphrases (separate with |)</label><input id="f_ca" value="${esc(c.catch)}"><label>Voice pitch</label><select id="f_vo">${["Puck","Kore","Charon","Fenrir","Zephyr"].map(x=>`<option ${voiceOf(c)==x?"selected":""}>${x}</option>`).join("")}</select><label>Setting</label><textarea id="f_sc" rows="2">${esc(c.scene)}</textarea>
+<div class="rw"><button class="btn" id="no">Cancel</button><button class="btn pr" id="yes">Save</button></div>`,m=>{m.querySelector("#no").onclick=closeM;
+let img=c.img||"";const pv=m.querySelector("#pv"),fi=m.querySelector("#pfile"),paint=()=>{pv.style.cssText=img?`margin:0;background:url("${img}") center/cover`:`margin:0;background:${c.color}`;pv.textContent=img?"":(m.querySelector("#f_name").value.trim()[0]||"?").toUpperCase()};paint();m.querySelector("#f_name").oninput=paint;
+m.querySelector("#up").onclick=()=>fi.click();m.querySelector("#rm").onclick=()=>{img="";fi.value="";paint()};
+fi.onchange=()=>{const f=fi.files[0];if(!f)return;if(!f.type.startsWith("image/"))return toast("Please choose an image file");const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const s=Math.min(im.width,im.height),cv=document.createElement("canvas");cv.width=cv.height=256;cv.getContext("2d").drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,256,256);img=cv.toDataURL("image/jpeg",.85);paint()};im.onerror=()=>toast("Couldn’t read that image");im.src=r.result};r.readAsDataURL(f)};
+m.querySelector("#yes").onclick=()=>{const g=k=>m.querySelector("#f_"+k).value.trim(),n=g("name");if(!n)return toast("Give your character a name");
+const d={name:n,tag:g("tag"),badge:g("bd"),pos:g("pos"),personality:g("per"),style:g("sty"),greet:g("gr"),catch:g("ca"),scene:g("sc"),voice:g("vo"),img};
+if(isNew){const nc={id:uid(),color:c.color,...d};S.chars.push(nc);S.chats[nc.id]=[mk(nc)];S.cur=nc.id}else Object.assign(cur(),d);save();closeM();renderAll()}})}
+$("#newc").onclick=()=>editor();
+$("#forge").onclick=()=>modal(`<h2>AI Character Forge</h2><div class="mu">Describe a concept and a character profile is built for you to refine.</div><label>Concept</label><textarea id="fp" rows="3" placeholder="e.g. a grumpy dragon who runs a bakery"></textarea><div class="rw"><button class="btn" id="no">Cancel</button><button class="btn pr" id="yes">Forge</button></div>`,m=>{m.querySelector("#no").onclick=closeM;
+m.querySelector("#yes").onclick=()=>{const p=m.querySelector("#fp").value.trim();if(!p)return toast("Describe your character first");
+const w=p.replace(/^(a|an|the)\s+/i,"").split(/\s+/),nm=w.slice(0,3).map(x=>x[0].toUpperCase()+x.slice(1)).join(" "),tr=Object.keys(TR).filter(k=>TR[k].test(p.toLowerCase())),pl=["witty","observant","loyal","mysterious","warm"];
+const prof={name:nm,tag:"A captivating companion shaped by "+p.slice(0,50),badge:tr[0]||"custom",pos:"their",personality:[...tr,...pl.slice(0,5-Math.min(tr.length,3))].join(", "),style:tr.includes("shy")?"shy":tr.includes("heroic")?"heroic":"casual",greet:"Well, hello there. I was hoping you’d turn up.",catch:"Every path has its purpose.",scene:p,color:rnd(["#c85a32","#7b61e0","#3aa6a0","#d9437b"])};closeM();editor(prof)}});
+function personaM(){modal(`<h2>Your persona</h2>${S.per.map(p=>`<div class="ch ${p.id==S.perCur?"on":""}" data-p="${p.id}"><div class="av sm" style="background:#c85a32">${esc(p.name[0].toUpperCase())}</div><div class="cn"><b>${esc(p.name)}</b><small>${esc(p.desc||"")}</small></div></div>`).join("")}<label>New persona name</label><input id="pn"><label>Description</label><input id="pd"><div class="rw"><button class="btn" id="no">Close</button><button class="btn pr" id="yes">Add persona</button></div>`,m=>{
+m.querySelector("#no").onclick=closeM;m.querySelectorAll("[data-p]").forEach(e=>e.onclick=()=>{S.perCur=e.dataset.p;save();closeM();renderAll()});
+m.querySelector("#yes").onclick=()=>{const n=m.querySelector("#pn").value.trim();if(!n)return toast("Give the persona a name");const p={id:uid(),name:n,desc:m.querySelector("#pd").value.trim()};S.per.push(p);S.perCur=p.id;save();closeM();renderAll()}})}
+$("#sw").onclick=personaM;
+$("#logo").innerHTML=I("flame",24);$("#col").innerHTML=I("left");$("#newc").innerHTML=I("plus")+" Create Character";$("#forge").innerHTML=I("spark")+" AI Character Forge";$("#srch").insertAdjacentHTML("afterbegin",I("search",17));
+$("#open").innerHTML=I("right");$("#rew").innerHTML=I("undo",21);$("#pal").innerHTML=I("pal",21);$("#det").innerHTML=I("sl",21)+'<span class="dtx"> Details</span>';$("#send").innerHTML=I("send",20);
+if(innerWidth<=820)document.body.classList.add("sc");applyTheme();renderAll();
+</script><script>if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))</script></body></html>
